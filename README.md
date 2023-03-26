@@ -1,4 +1,4 @@
-# Code Snippet Cli
+# Codesnipper
 
 Manage your collection of code snippets for use in different editors. `cs-cli` helps you generate the correct format for snippets (or LiveTemplates in Pycharm speak) across 
 editors using the same source files:
