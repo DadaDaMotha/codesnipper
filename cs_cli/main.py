@@ -250,7 +250,7 @@ def vscode(
     ),
     strategy: MergeStrategy = typer.Option(
         MergeStrategy.MERGE,
-        help="Overwrite or merge existing json snippets. Note that comments in the json will get lost",
+        help="Overwrite or merge existing json snippets. Will only work if comments have been removed",
     ),
     dry_run: bool = False,
     schema_json: bool = typer.Option(

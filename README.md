@@ -40,6 +40,12 @@ You can get autocomplete for your snipppets folders (`-f` flag), which can be ha
     # with one compatible for all your workstations
     source "$HOME/.bash_completions/cs-cli.sh"
 
+### Currently missing features
+
+- Reading json with comments (results in an error)
+- Importing Pycharm XML Templates (--> `pydantic-xml` library) and VSCode templates
+- Full set of mapping language_ids of VSCode to Pycharm
+- Full set of Pycharm Template contexts
 
 ### Updating the cli
 
@@ -161,8 +167,8 @@ export CODE_SNIPPETS_PATH=$HOME/myrepos/code-snippets
 function update-snippets() {
   cd "$CODE_SNIPPETS_PATH" || exit 1
   git stash && git pull --rebase && git stash pop
-  which codium && cs-cli vscode --strategy merge
-  which code && cs-cli vscode --strategy merge
+  which codium && cs-cli vscode
+  which code && cs-cli vscode
   which charm && cs-cli pycharm
 }
 ```
