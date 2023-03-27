@@ -95,13 +95,13 @@ language it should attribute the snippets. Find the jsonschema with `cs-cli conf
 
 ```json
 {
-  "title": "SnippetsConfig",
+  "title": "StrictSnippetsConfig",
   "description": "Config to place in a snippet directory for the various editors",
   "type": "object",
   "properties": {
     "pycharm_contexts": {
       "title": "Pycharm Contexts",
-      "description": "PyCharm's limited list of contexts, where OTHER mean a global template",
+      "description": "PyCharm's limited list of contexts, where OTHER stands for a global template",
       "default": [
         "OTHER"
       ],
@@ -112,19 +112,78 @@ language it should attribute the snippets. Find the jsonschema with `cs-cli conf
           "SHELL_SCRIPT",
           "Python",
           "XML",
-          "JSON"
+          "JSON",
+          "CSS",
+          "Django",
+          "ECMAScript6",
+          "HTML",
+          "JAVA_SCRIPT",
+          "Properties",
+          "SQL",
+          "TypeScript",
+          "Vue",
+          "CUCUMBER_FEATURE_FILE",
+          "REQUEST",
+          "PUPPET_FILE",
+          "Handlebars"
         ],
         "type": "string"
       }
     },
     "vscode_lang_ids": {
-      "title": "Vscode Lang Ids",
       "description": "Language identifiers used by VSCode. Will include all the snippets in a json file per identifier",
       "default": [],
       "type": "array",
       "items": {
-        "type": "string"
+        "$ref": "#/definitions/DefaultLangID"
       }
+    }
+  },
+  "definitions": {
+    "DefaultLangID": {
+      "title": "DefaultLangID",
+      "description": "Most of the VSCode supported language ids",
+      "enum": [
+        "bibtex",
+        "clozure",
+        "c",
+        "cpp",
+        "csharp",
+        "dockercompose",
+        "css",
+        "dockerfile",
+        "go",
+        "handlebars",
+        "html",
+        "java",
+        "init",
+        "javascript",
+        "javascriptreact",
+        "latex",
+        "less",
+        "lua",
+        "makefile",
+        "markdown",
+        "plaintext",
+        "powershell",
+        "python",
+        "r",
+        "ruby",
+        "rust",
+        "scss",
+        "shellscript",
+        "sql",
+        "stylus",
+        "swift",
+        "typescript",
+        "typescriptreact",
+        "tex",
+        "vue",
+        "xml",
+        "xsl",
+        "yaml"
+      ],
+      "type": "string"
     }
   }
 }

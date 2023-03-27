@@ -8,7 +8,26 @@ from pydantic.typing import get_origin
 from pydantic.utils import lenient_issubclass
 
 BoolType = t.Literal["true", "false"]
-CharmContextNames = t.Literal["OTHER", "SHELL_SCRIPT", "Python", "XML", "JSON"]
+CharmContextNames = t.Literal[
+    "OTHER",
+    "SHELL_SCRIPT",
+    "Python",
+    "XML",
+    "JSON",
+    "CSS",
+    "Django",
+    "ECMAScript6",
+    "HTML",
+    "JAVA_SCRIPT",
+    "Properties",
+    "SQL",
+    "TypeScript",
+    "Vue",
+    "CUCUMBER_FEATURE_FILE",
+    "REQUEST",
+    "PUPPET_FILE",
+    "Handlebars",
+]
 
 charm_variable_rgx = re.compile(r"\$([a-z_A-Z\d]+)\$")
 digits_rgx = re.compile(r"^\d+$")
