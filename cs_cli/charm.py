@@ -1,10 +1,10 @@
 import typing as t
 from pathlib import Path
 
-from cs_cli.charm_models import CharmContextNames
 from cs_cli.types import StringOrPath
+from cs_cli.utils import application_dir
 
-charm_config_base = Path("~/.config/JetBrains").expanduser()
+charm_config_base = application_dir("JetBrains")
 
 
 def config_dir(

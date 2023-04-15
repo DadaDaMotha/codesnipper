@@ -1,3 +1,4 @@
+import functools
 import re
 import sys
 import typing as t
@@ -20,13 +21,17 @@ from cs_cli.codium_models import (
     VSCodeSnippets,
 )
 from cs_cli.config import SnippetsConfig, StrictSnippetsConfig
-from cs_cli.constants import DEFAULT_PREFIX, SNIPPET_CONFIG
+from cs_cli.constants import DEFAULT_PREFIX, SNIPPET_CONFIG, SNIPPETS_ROOT_ENV
 from cs_cli.py import remove_python_imports
 from cs_cli.types import StringOrPath, TransformT
 from cs_cli.utils import file_ending, snippet_folders, yield_lines
 
 app = typer.Typer()
-SNIPPETS_ROOT = Path(getenv("CODE_SNIPPETS_PATH", "."))
+
+
+@functools.cache
+def snippets_root():
+    return Path(getenv(SNIPPETS_ROOT_ENV, "."))
 
 
 def success(msg):
@@ -45,19 +50,19 @@ def file_info(f: Path):
 def auto_complete_snippets(ctx: typer.Context, search: str):
     """Autocompletion function for shell completion"""
     selected = ctx.params.get("folders") or []
-    for f in snippet_folders(SNIPPETS_ROOT):
+    for f in snippet_folders(snippets_root()):
         name = f.parts[-1]
         if search in name and name not in selected:
             yield name
 
 
 def get_snippets_folders():
-    return tuple(snippet_folders(SNIPPETS_ROOT))
+    return tuple(snippet_folders(snippets_root()))
 
 
 @lru_cache(typed=True)
-def snippets_config(folder: Path) -> SnippetsConfig:
-    f = folder / SNIPPET_CONFIG
+def snippets_config(path: Path) -> SnippetsConfig:
+    f = (path.parent if path.is_file() else path) / SNIPPET_CONFIG
     if f.is_file():
         return SnippetsConfig.parse_file(f)
     return SnippetsConfig()
@@ -111,6 +116,7 @@ def generate(
     get_fn: t.Callable[[Path], str] | None = None,
     exclude_rgx: str = "",
     dry_run: bool = False,
+    print_on_dry_run: bool = True,
 ):
     transform_by_ending = {
         "py": (partial(remove_imports, rm_imports=rm_imports),),
@@ -136,15 +142,16 @@ def generate(
         final_model, string_repr = models_callback(models, folder)
 
         if dry_run:
-            print(string_repr)
+            if print_on_dry_run:
+                print(string_repr)
             continue
         if get_fn and write_callback:
             target = templates_dir / get_fn(folder)
             write_callback(target, final_model, string_repr)
 
 
-def charm_handle_file(snippet_name: str, content: str, folder: Path):
-    sn_cfg = snippets_config(folder)
+def charm_handle_file(snippet_name: str, content: str, file: Path):
+    sn_cfg = snippets_config(file)
     ctx_opts: t.Sequence[str] = sn_cfg.pycharm_contexts
     ctx = TemplateContext.parse_obj([{"name": n} for n in ctx_opts])
     return CharmTemplate(name=snippet_name, value=content, context=ctx)
@@ -218,6 +225,7 @@ def pycharm(
         models_callback=models_callback,
         get_fn=get_fn,
         write_callback=write_template,
+        print_on_dry_run=True,
     )
 
 
@@ -303,9 +311,11 @@ def vscode(
         dry_run=dry_run,
         file_to_model=vscode_handle_file,
         models_callback=models_callback,
+        print_on_dry_run=False,
     )
     final_model = VSCodeOut.parse_obj(model_registry)
     if dry_run:
+        typer.echo(VSCodeOut.__doc__)
         typer.echo(final_model.json(indent=2))
     else:
         final_model.write_files(

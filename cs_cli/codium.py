@@ -1,12 +1,10 @@
 import typing as t
-from pathlib import Path
 
 from cs_cli.types import StringOrPath
+from cs_cli.utils import application_dir
 
-codium_config_base = Path("~/.config/VSCodium/User").expanduser()
-
-
-vscode_config_base = Path("~/.config/VSCode/User").expanduser()
+codium_config_base = application_dir("VSCodium") / "User"
+vscode_config_base = application_dir("VSCode") / "User"
 
 
 def config_dir(
@@ -18,6 +16,6 @@ def config_dir(
             config_base = maybe_dir
 
     if not config_base:
-        on_fail(f"vscodium/vscode not installed using apt/snap.")
+        on_fail(f"vscodium/vscode not installed.")
         return
     return config_base

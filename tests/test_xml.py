@@ -4,9 +4,9 @@ import pytest
 
 from cs_cli.charm_models import (
     CharmTemplate,
+    extmarks_variable_rgx,
     transform_extmark_to_pycharm,
     transform_pycharm_to_extmark,
-    extmarks_variable_rgx,
 )
 
 

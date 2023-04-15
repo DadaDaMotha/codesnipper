@@ -2,6 +2,8 @@ import re
 import typing as t
 from pathlib import Path
 
+from click import get_app_dir
+
 from cs_cli.types import TransformT
 
 fn_rgx = re.compile(r"([\w_])\.([a-z]+)$")
@@ -39,3 +41,9 @@ def yield_lines(
         line = process_transformers(line)
         if line is not None:
             yield line
+
+
+def application_dir(name: str):
+    """Fixes click.get_app_dir lowercasing app name for unix"""
+    p = Path(get_app_dir(name))
+    return p.parent / name
